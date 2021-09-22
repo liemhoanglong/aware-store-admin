@@ -1,38 +1,175 @@
-.App {
-  text-align: center;
+* {
+  font-family: Montserrat;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app{
+  background-color: #f6f6f6;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+p, span{
+  font-size: 14px;
+  color: #3d3d3f;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.p-0{
+  padding: 0;
+}
+
+.pt-0{
+  padding-top: 0;
+}
+
+.pb-0{
+  padding-bottom: 0;
+}
+
+.m-0{
+  margin: 0;
+}
+
+.mt-0{
+  margin-top: 0;
+}
+
+.mb-0{
+  margin-bottom: 0;
+}
+
+.border-none{
+  border: none;
+}
+
+.text-12{
+  font-size: 12px;
+}
+
+.text-white{
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.text-orange{
+  color: #ffa15f;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.text-gray{
+  color: #acacac;
+}
+
+.cursor-hover{
+  cursor: pointer;
+}
+
+.link-custom {
+  text-decoration: none;
+  color: inherit;
+}
+
+.link-custom:hover {
+  text-decoration: none;
+}
+
+.btn-max-width{
+  width: 100%;
+  height: 48px;
+  background-color: #ffa15f;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-max-width:hover{
+  background-color: #ff9142;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn, .dropbtn-right {
+  border: none;
+  cursor: pointer;
+}
+
+.dropbtn {
+  padding: 20px 0;
+}
+
+.dropbtn-right {
+  padding: 5px 0;
+}
+
+.dropbtn:after {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: .255em;
+  content: "";
+  border-top: .3em solid #9B9B9B;
+  border-right: .3em solid transparent;
+  border-bottom: 0;
+  border-left: .3em solid transparent;
+}
+
+.dropdown-content,
+.dropdown-content-right {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content-right {
+  right: 0;
+}
+
+.dropdown-content a,
+.dropdown-content-right a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover,
+.dropdown-content-right a:hover {
+  background-color: #f1f1f1
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown:hover .dropdown-content-right {
+  display: block;
+}
+/* 
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+} */
+
+.login-wrapper{
+  position: absolute;
+  top: 50%;  /* position the top  edge of the element at the middle of the parent */
+  left: 50%; /* position the left edge of the element at the middle of the parent */
+  transform: translate(-50%, -50%); /* This is a shorthand of translateX(-50%) and translateY(-50%) */
+  width: 316px;
+  padding: 32px;
+  border-radius: 2px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px 0 rgba(0, 0, 0, 0.08);
+  background-color: rgba(61, 61, 63, .7);
+}
+
+.login { 
+  height: 100vh;
+  background: url(assets/rectangle-5.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.login-input{
+  width: 284px;
+  padding: 14px 16px;
 }

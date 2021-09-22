@@ -2,37 +2,24 @@ import React from 'react';
 import { Redirect } from "react-router-dom";
 
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
-import PageNotFound from "./pages/PageNotFound";
 
 const routes = [
     {
-        path: '/',
+        path: '/app/home',
         exact: true,
         component: () => <Home />
     },
     {
-        path: '/login',
-        exact: true,
-        component: () => <Login />
-    },
-    {
-        path: '/signup',
-        exact: true,
-        component: () => <Signup />
-    },
-    {
-        path: '/Profile',
+        path: '/app/profile',
         exact: true,
         component: () => <Profile />
     },
     {
         path: '',
-        exact: false,
-        component: () => <PageNotFound />
-    },
+        exact: true,
+        component: () => <Redirect to="/page-not-found" />
+    }
 ]
 
 export default routes;

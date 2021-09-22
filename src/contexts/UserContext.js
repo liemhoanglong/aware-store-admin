@@ -10,13 +10,13 @@ let UserStateContext = React.createContext();
 let UserDispatchContext = React.createContext();
 
 function UserProvider({ children }) {
-  const [loginState, setLoginState] = React.useState({ isAuthenticated: false, profile: null });
+  const [loginState, setLoginState] = React.useState({ isAuthenticated: null, profile: null });
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        // console.log('fetch user profile')
         const res = await CallAuthAPI('/user/profile', 'GET', null);
-        console.log(res.status)
         if (res.status === 200) {
           setLoginState({ isAuthenticated: true, profile: res.data })
         } else {
@@ -41,7 +41,7 @@ function UserProvider({ children }) {
 }
 
 function useUserState() {
-  var context = React.useContext(UserStateContext);
+  const context = React.useContext(UserStateContext);
   if (context === undefined) {
     throw new Error("useUserState must be used within a UserProvider");
   }
@@ -49,7 +49,7 @@ function useUserState() {
 }
 
 function useUserDispatch() {
-  var context = React.useContext(UserDispatchContext);
+  const context = React.useContext(UserDispatchContext);
   if (context === undefined) {
     throw new Error("useUserDispatch must be used within a UserProvider");
   }
@@ -71,7 +71,7 @@ function loginUser(dispatch, username, password, history, setIsLoading, setError
       })
       .catch(err => {
         if (err.response) {
-          setError(err.response.data.message);
+          setError(err.response.data.err);
         } else {
           setError("Login fail!");
         }

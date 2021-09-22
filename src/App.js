@@ -1,40 +1,53 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
-import routes from './routes';
 import './App.css';
-import Header from "./components/Header";
-
-const showContentMenus = (routes) => {
-  let result = null;
-  if (routes.length > 0) {
-    result = routes.map((route, index) => {
-      return <Route key={index}
-        path={route.path}
-        exact={route.exact}
-        component={route.component}
-      />
-    })
-  }
-  return result;
-};
+import { useUserState } from "./contexts/UserContext";
+import Layout from './components/Layout';
+import Login from './pages/Login';
+import Error from './pages/Error';
 
 function App() {
+  const { isAuthenticated, user } = useUserState();
+  // console.log(isAuthenticated)
+  const PrivateRoute = ({ component, ...rest }) => {
+    return (
+      <Route
+        {...rest}
+        render={props => {
+          return (isAuthenticated === true) ?
+            React.createElement(component, props)
+            : isAuthenticated === false ?
+              <Redirect to={{ pathname: "/login", state: { from: props.location } }} />
+              : <></>
+        }}
+      />
+    );
+  }
+  const PublicRoute = ({ component, ...rest }) => {
+    return (
+      <Route
+        {...rest}
+        render={props => {
+          return (isAuthenticated === true) ?
+            <Redirect to={{ pathname: "/" }} />
+            : isAuthenticated === false ?
+              React.createElement(component, props)
+              : <></>
+        }}
+      />
+    );
+  }
 
   return (
     <Router>
-      {/* <Suspense
-      fallback={
-      <div style={{ width: "100%" }}>
-        <CustomizedLinearProgress isOpen={true} />
-      </div>
-      }
-      > */}
-      <Header />
       <Switch>
-        {showContentMenus(routes)}
+        <Route exact path="/" render={() => <Redirect to="/app/home" />} />
+        <Route exact path="/app" render={() => <Redirect to="/app/home" />} />
+        <PrivateRoute path="/app" component={Layout} />
+        <PublicRoute path="/login" component={Login} />
+        <Route component={Error} />
       </Switch>
-      {/* </Suspense> */}
     </Router>
   );
 }

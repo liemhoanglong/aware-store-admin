@@ -1,0 +1,28 @@
+.sidebar-item{
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    color: #9B9B9B;
+}
+
+.sidebar-item:hover{
+    color: #ff9b53;
+    border-left: 6px solid #ff9b53;
+    padding: 12px 20px 12px 14px;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-item-active{
+    padding: 12px 20px 12px 14px;
+    display: flex;
+    align-items: center;
+    color: #ffa15f;
+    border-left: 6px solid #ffa15f;
+    transition: .5s ease-in-out;
+}
+
+.sidebar-item svg,
+.sidebar-item-active svg{
+    padding-right: 20px;
+}

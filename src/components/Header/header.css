@@ -1,0 +1,11 @@
+.header-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 104px;
+}
+
+.header-right{
+    display: flex;
+    align-items: center;
+}
