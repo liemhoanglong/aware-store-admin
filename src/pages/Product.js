@@ -11,7 +11,6 @@ import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { StyledTableCell, StyledTableRow } from '../components/Table/style';
 import Pagination from '../components/Pagination';
@@ -208,52 +207,54 @@ export default function Product(props) {
       </div>
       <Paper style={{ borderRadius: 0, marginTop: 32, marginBottom: 26 }}>
         <div style={{ padding: '0 24px' }}>
-          <Table stickyHeader aria-label="customized table" >
-            <TableHead>
-              <TableRow>
-                <StyledTableCell sx={{ paddingLeft: '24px', width: '50%' }} >Products</StyledTableCell>
-                <StyledTableCell>Sold</StyledTableCell>
-                <StyledTableCell>Date added</StyledTableCell>
-                <StyledTableCell>profit ($)</StyledTableCell>
-                <StyledTableCell></StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {productData && productData.products.map((product) => (
-                <StyledTableRow hover key={product._id}>
-                  <StyledTableCell sx={{ padding: '12px 24px' }} scope="row">
-                    <CardProduct product={product} />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {`${product.sold[0].quantity + product.sold[1].quantity + product.sold[2].quantity}/${product.size[0].quantity + product.size[1].quantity + product.size[2].quantity}`}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {parseDay(product.postedDate)}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {(product.price * (product.sold[0].quantity + product.sold[1].quantity + product.sold[2].quantity)).toLocaleString('en-US', { style: 'currency', currency: 'USD' }).slice(1)}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    <div className="dropdown" style={{ fontSize: 14 }}>
-                      <div className="dropbtn-right d-flex align-items-center" style={{ padding: '10 0' }}>
-                        <b>Actions</b>
+          <div style={{ minHeight: 550 }}>
+            <Table stickyHeader aria-label="customized table" >
+              <TableHead>
+                <TableRow sx={{ height: 64 }}>
+                  <StyledTableCell sx={{ paddingLeft: '24px', width: '50%', fontSize: 12 }} >Products</StyledTableCell>
+                  <StyledTableCell sx={{ fontSize: 12 }}>Sold</StyledTableCell>
+                  <StyledTableCell sx={{ fontSize: 12 }}>Date added</StyledTableCell>
+                  <StyledTableCell sx={{ fontSize: 12 }}>profit ($)</StyledTableCell>
+                  <StyledTableCell sx={{ fontSize: 12 }}></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {productData && productData.products.map((product) => (
+                  <StyledTableRow hover key={product._id}>
+                    <StyledTableCell sx={{ padding: '12px 24px' }} scope="row">
+                      <CardProduct product={product} />
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {`${product.sold[0].quantity + product.sold[1].quantity + product.sold[2].quantity}/${product.size[0].quantity + product.size[1].quantity + product.size[2].quantity}`}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {parseDay(product.postedDate)}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {(product.price * (product.sold[0].quantity + product.sold[1].quantity + product.sold[2].quantity)).toLocaleString('en-US', { style: 'currency', currency: 'USD' }).slice(1)}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      <div className="dropdown" style={{ fontSize: 14 }}>
+                        <div className="dropbtn-right d-flex align-items-center" style={{ padding: '10 0' }}>
+                          <b>Actions</b>
+                        </div>
+                        <div className="dropdown-content-right">
+                          <Link to={`/app/products/edit-product/${product._id}`} className='d-flex align-items-center'><CreateIcon style={{ fill: '#9b9b9b' }} /><span style={{ marginLeft: 12 }}>Edit</span></Link>
+                          <div onClick={() => handleAlertRemoveProduct(product._id)} className='cursor-hover d-flex align-items-center'><DeleteIcon style={{ fill: '#9b9b9b' }} /><span style={{ marginLeft: 12 }}>Remove</span></div>
+                        </div>
                       </div>
-                      <div className="dropdown-content-right">
-                        <Link to={`/app/products/edit-product/${product._id}`} className='d-flex align-items-center'><CreateIcon style={{ fill: '#9b9b9b' }} /><span style={{ marginLeft: 12 }}>Edit</span></Link>
-                        <div onClick={() => handleAlertRemoveProduct(product._id)} className='cursor-hover d-flex align-items-center'><DeleteIcon style={{ fill: '#9b9b9b' }} /><span style={{ marginLeft: 12 }}>Remove</span></div>
-                      </div>
-                    </div>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
           <br />
           {productData &&
             <Pagination
               page={page}
               rowsPerPage={rowsPerPage}
-              productData={productData}
+              data={productData}
               handleChangePage={handleChangePage}
               handleChangeRowsPerPage={handleChangeRowsPerPage}
             />

@@ -8,7 +8,6 @@ import { logoutUser, useUserDispatch } from "../../contexts/UserContext";
 import './header.css'
 
 function capitalizeFirstLetter(string) {
-  console.log(string)
   const regex = /-/gi;
   string = string.replace(regex, ' ');
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -18,7 +17,6 @@ export default function Header(props) {
   const userDispatch = useUserDispatch();
   let history = useHistory();
   let pathnameSplited = history.location.pathname.split('/');
-  console.log(pathnameSplited)
   return (
     <div style={{ height: '80px' }}>
       <div className='header-wrapper'>
