@@ -4,10 +4,10 @@ import { Select, MenuItem } from '@mui/material';
 import PaginationUl from '../Pagination/style';
 
 const Pagination = (props) => {
-  const { page, rowsPerPage, productData, handleChangePage, handleChangeRowsPerPage } = props;
+  const { page, rowsPerPage, data, handleChangePage, handleChangeRowsPerPage } = props;
   return (
     <div className='d-flex justify-content-between align-items-center'>
-      <span>Show 1 to {rowsPerPage} of {productData.count} entries</span>
+      <span>Show 1 to {rowsPerPage} of {data.count} entries</span>
       <div className='d-flex align-items-center'>
         <Select
           labelId="product-sort-label"
@@ -26,7 +26,7 @@ const Pagination = (props) => {
         <PaginationUl
           className='pagination-custom'
           variant="outlined" shape="rounded"
-          page={page} count={Math.ceil(productData.count / rowsPerPage)}
+          page={page} count={Math.ceil(data.count / rowsPerPage)}
           showFirstButton showLastButton
           onChange={handleChangePage}
           style={{ marginLeft: 20 }}

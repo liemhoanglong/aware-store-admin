@@ -272,7 +272,8 @@ div, p, span{
 }
 
 .custom-button:hover,
-.custom-button-outline:hover{
+.custom-button-outline:hover,
+.custom-button-outline-2:hover{
   background-color: #ff9142;
   color: white;
   border: solid 1px #ff9142;
@@ -280,9 +281,20 @@ div, p, span{
 
 .custom-button-outline{
   text-transform: none;
-  background-color: transparent;
+  background-color: white;
   box-shadow: none;
   color: #ffa15f;
+  height: 48px;
+  border-radius: 2px;
+  border: solid 1px #ededed;
+}
+
+
+.custom-button-outline-2{
+  text-transform: none;
+  background-color: white;
+  box-shadow: none;
+  color: black;
   height: 48px;
   border-radius: 2px;
   border: solid 1px #ededed;
@@ -320,4 +332,46 @@ div, p, span{
   -webkit-line-clamp: 1;
   word-break: break-word;
   -webkit-box-orient: vertical;
+}
+
+.order-status{
+  font-size: 10px;
+  padding: 3px 5px;
+  font-weight: 500;
+  width: 60px; 
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+}
+
+.bg-green{
+  background-color: #82bf11;
+}
+
+.bg-yellow{
+  background-color: #fbba4e;
+}
+
+.bg-red{
+  background-color: #f05d62;
+}
+
+.bg-blue{
+  background-color: #419BF9;
+}
+
+.input-date-start{
+  padding-left: 16px;
+  padding-right: 16px;
+  border: solid  1px #ededed;
+  border-right: none;
+  width: 135px;
+}
+
+.input-date-end{
+  padding-left: 16px;
+  padding-right: 16px;
+  border: solid  1px #ededed;
+  border-left: none;
+  width: 135px;
 }
