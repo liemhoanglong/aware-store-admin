@@ -26,7 +26,7 @@ function Layout(props) {
             <Grid item>
                 <Sidebar />
             </Grid>
-            <Grid item style={{ width: 'calc(100% - 240px)' }}>
+            <Grid item style={{ width: 'calc(100% - 260px)' }}>
                 <Header />
                 <Switch>
                     {showContentMenus(routes)}

@@ -3,10 +3,11 @@ import { Redirect } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import Product from "./pages/Product";
 
 const routes = [
     {
-        path: '/app/home',
+        path: '/app/overview',
         exact: true,
         component: () => <Home />
     },
@@ -14,6 +15,21 @@ const routes = [
         path: '/app/profile',
         exact: true,
         component: () => <Profile />
+    },
+    {
+        path: '/app/products',
+        exact: true,
+        component: () => <Product />
+    },
+    {
+        path: '/app/products/add-product',
+        exact: true,
+        component: () => <Product />
+    },
+    {
+        path: '/app/products/edit-product/:id',
+        exact: true,
+        component: () => <Product />
     },
     {
         path: '',

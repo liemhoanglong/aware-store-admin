@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 import './index.css';
 import App from './App';
@@ -9,7 +10,9 @@ import { UserProvider } from './contexts/UserContext';
 ReactDOM.render(
   <UserProvider>
     <React.StrictMode>
-      <App />
+      <StyledEngineProvider injectFirst>
+        <App />
+      </StyledEngineProvider>
     </React.StrictMode>
   </UserProvider>
   ,
