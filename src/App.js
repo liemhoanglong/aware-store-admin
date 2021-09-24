@@ -44,9 +44,9 @@ function App() {
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/app/overview" />} />
         <Route exact path="/app" render={() => <Redirect to="/app/overview" />} />
-        {/* <PrivateRoute path="/app" component={Layout} /> */}
-        {/* <PublicRoute path="/login" component={Login} /> */}
-        <Route component={Layout} />
+        <PrivateRoute path="/app" component={Layout} />
+        <PublicRoute path="/login" component={Login} />
+        {/* <Route component={Layout} /> */}
         <Route component={Error} />
       </Switch>
     </Router>

@@ -20,8 +20,9 @@ import CallAuthAPI from '../services/CallAuthAPI';
 import parseDay from '../utils/parseDay';
 
 export default function Order(props) {
-  const location = useHistory().location;
+  // console.log('order page------------------------')
   const history = useHistory();
+  const location = history.location;
 
   const [openAlert, setOpenAlert] = useState(false);
   const [orderId, setOrderId] = useState(false);
@@ -42,6 +43,7 @@ export default function Order(props) {
   const [orderData, setOrderData] = useState();
 
   useEffect(() => {
+    console.log('order page fetch------------------------')
     setLoad(true);
     const fetchData = async () => {
       let queryObject = QueryString.parse(location.search);

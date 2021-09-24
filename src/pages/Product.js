@@ -22,8 +22,9 @@ import CallAuthAPI from '../services/CallAuthAPI';
 import parseDay from '../utils/parseDay';
 
 export default function Product(props) {
-  const location = useHistory().location;
+  // console.log('product page------------------------')
   const history = useHistory();
+  const location = history.location;
 
   const [openAlert, setOpenAlert] = useState(false);
   const [productId, setProductId] = useState(false);
