@@ -221,6 +221,10 @@ div, p, span{
   justify-content: space-between;
 }
 
+.justify-content-end{
+  justify-content: flex-end;
+}
+
 .align-items-center{
   align-items: center;
 }
@@ -415,4 +419,52 @@ div, p, span{
   border: solid  1px #ededed;
   border-left: none;
   width: 135px;
+}
+
+.list-image{
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  height: 270px;
+  margin-bottom: 16px;
+}
+
+.image-card{
+  height: 100%;
+  background-color: white;
+  padding: 0;
+  margin-right: 20px;
+}
+
+.image-item{
+  width: 180px;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-add{
+  width: 180px;
+  height: 100%;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.image-add:hover,
+.image-item:hover{
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);
+}
+
+.image-add span,
+.image-add svg{
+  color: #acacac;
+  fill: #acacac;
+}
+
+.image-remove{
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
 }

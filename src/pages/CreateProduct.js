@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from "react-router-dom";
 import {
-  Grid, Button, TextField, Autocomplete, Chip
+  Grid, Button, TextField, Autocomplete, Chip, List, ListItem
 } from '@mui/material';
+
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import CloseIcon from '@mui/icons-material/Close';
+
+import CallAuthAPI from '../services/CallAuthAPI';
+import CallAPI from '../services/CallAPI';
+import PopUpAlert from '../components/PopUpAlert';
+import PopupImage from '../components/PopupImage';
+import config from '../constants/config';
+import { sortSize, sortObjectSize } from '../utils/sortSize';
 
 const top100Films = [
   { title: 'The Shawshank Redemption', year: 1994 },
@@ -16,20 +27,138 @@ const top100Films = [
 
 export default function CreateProduct(props) {
   const [input, setInput] = useState({
-    photo: [],
+    imageList: ['https://cdn.shopify.com/s/files/1/1414/2498/products/CS_ClassicWhite_06_800x.jpg?v=1614938767', 'https://assets.myntassets.com/h_1440,q_100,w_1080/v1/assets/images/1862801/2018/2/9/11518155061506-Roadster-Men-Maroon--Navy-Blue-Regular-Fit-Checked-Casual-Shirt-8861518155061131-1.jpg', 'https://revolutionclothing.cdn.vccloud.vn/wp-content/uploads/2021/06/z2536606508904_dabe1d43c33b3f0cab550eae587f349b-500x498.jpg'],
     name: '',
-    categories: [],
-    brand: '',
+    catelist: [],
+    categroup: [],
+    cate: [],
+    brand: null,
     price: 0,
-  })
+    size: [{ name: config.SIZE[0], quantity: 1 }],
+    colors: [],
+    info: '',
+  });
+  const [catelistData, setCatelistData] = useState([{ "_id": "6136342577e31326701a18fd", "name": "Men" }, { "_id": "6136343677e31326701a1901", "name": "Ladies" }, { "_id": "6136343b77e31326701a1903", "name": "Grils" }, { "_id": "6136346c9f814a47407fae2b", "name": "Boys" }]);
+  const [categroupData, setCategroupData] = useState([]);
+  const [cateData, setCateData] = useState([]);
+  const [brandData, setBrandData] = useState([]);
+  const [colorData, setColorData] = useState([]);
+  const [sizeData, setSizeData] = useState(config.SIZE.slice(1));
+
+  const [imgIndex, setImgIndex] = useState(0);
+  const [textFieldIamge, setTextFieldImage] = useState('');
+  const [openUploadImg, setOpenUploadImg] = useState(false);
+  const [openEditImg, setOpenEditImg] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     let callCategroup = CallAPI('/cate-group', 'get', {});
+  //     let callCate = CallAPI('/cate', 'get', {});
+  //     let callBrand = CallAPI('/brand', 'get', {});
+  //     let callColor = CallAPI('/color', 'get', {});
+
+  //     let resCategroup = await callCategroup;
+  //     let resCate = await callCate;
+  //     let resBrand = await callBrand;
+  //     let resColor = await callColor;
+
+  //     setCategroupData(resCategroup.data.data);
+  //     setCateData(resCate.data.data);
+  //     setBrandData(resBrand.data.data);
+  //     setColorData(resColor.data.data);
+  //   }
+  //   fetchData();
+  // }, [])
+
+  const handleOpenEditImage = (imgIdx) => {
+    setOpenEditImg(true);
+    setImgIndex(imgIdx);
+    setTextFieldImage(input.imageList[imgIdx]);
+  };
+
+  const handleEditImage = () => {
+    let temp = [...input.imageList];
+    temp[imgIndex] = textFieldIamge;
+    setInput(prevState => ({ ...prevState, imageList: [...temp] }))
+    setOpenEditImg(false);
+  };
+
+  const handleOpenAddImage = () => {
+    setOpenUploadImg(true);
+    setTextFieldImage('');
+  };
+
+  const handleAddImage = () => {
+    let temp = [...input.imageList];
+    temp.push(textFieldIamge);
+    setInput(prevState => ({ ...prevState, imageList: [...temp] }))
+    setOpenUploadImg(false);
+  };
+
+  const handleOpenRemoveImage = (imgIdx) => {
+    setOpenAlert(true);
+    setImgIndex(imgIdx);
+  };
+
+  const handleRemoveImage = () => {
+    let temp = [...input.imageList];
+    temp.splice(imgIndex, 1);
+    setInput(prevState => ({ ...prevState, imageList: [...temp] }))
+    setOpenAlert(false);
+  };
+
   return (
     <form>
+      <PopUpAlert
+        open={openAlert}
+        handleClose={() => setOpenAlert(false)}
+        handleSubmit={() => handleRemoveImage()}
+        title={'Confirm'}
+        content={'Are you sure to remove this img?'}
+      />
+      <PopupImage
+        open={openEditImg}
+        textFieldIamge={textFieldIamge}
+        setTextFieldImage={setTextFieldImage}
+        handleClose={() => setOpenEditImg(false)}
+        handleSubmit={() => handleEditImage()}
+        title={'Edit image'}
+      />
+      <PopupImage
+        open={openUploadImg}
+        textFieldIamge={textFieldIamge}
+        setTextFieldImage={setTextFieldImage}
+        handleClose={() => setOpenUploadImg(false)}
+        handleSubmit={() => handleAddImage()}
+        title={'Upload image'}
+      />
       <Grid container className='align-items-center' spacing={2} style={{ marginTop: 50 }}>
         <Grid item xs={2} style={{ textAlign: 'right' }}>
           <div className='text-12 text-up' style={{ marginRight: 4 }}><b>photos</b></div>
         </Grid>
         <Grid item lg={8} md={10}>
-          <div style={{ height: '300px' }}>asd</div>
+          <List className='list-image' >
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((imgIdx) => (
+              imgIdx < input.imageList.length ?
+                <ListItem key={imgIdx} className='cursor-hover image-card' style={{ position: 'relative' }}>
+                  <CloseIcon onClick={() => handleOpenRemoveImage(imgIdx)} className='image-remove' style={{ fill: '#acacac' }} />
+                  <img key={imgIdx} onClick={() => handleOpenEditImage(imgIdx)} className='image-item' src={input.imageList[imgIdx]} alt={`img ${imgIdx}`} />
+                </ListItem>
+                : <ListItem key={imgIdx} onClick={handleOpenAddImage} className='cursor-hover image-card'><div className='image-add'><AddCircleIcon /><span>Add photo</span></div></ListItem>
+            ))}
+          </List>
+          {/* <div className='list-image'>
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((imgIdx) => (
+              imgIdx < input.imageList.length ?
+                <div key={imgIdx} className='cursor-hover image-card' style={{ position: 'relative' }}>
+                  <CloseIcon onClick={() => handleOpenRemoveImage(imgIdx)} className='image-remove' style={{ fill: '#acacac' }} />
+                  <img key={imgIdx} onClick={() => handleOpenEditImage(imgIdx)} className='image-item' src={input.imageList[imgIdx]} alt={`img ${imgIdx}`} />
+                </div>
+                : <div key={imgIdx} onClick={handleOpenAddImage} className='cursor-hover'><div className='image-add'><AddCircleIcon /><span>Add photo</span></div></div>
+            ))}
+          </div> */}
+          <p className='text-gray'>You can add up to 8 photos.The 1st photo will be set as cover (main photo).</p>
         </Grid>
       </Grid>
       <Grid container className='align-items-center' spacing={2} style={{ marginTop: 8 }}>
@@ -42,6 +171,7 @@ export default function CreateProduct(props) {
             variant="standard"
             placeholder="Collete Stretch Linen Minidress"
             InputProps={{ disableUnderline: true }}
+            required
           />
         </Grid>
       </Grid>
@@ -50,18 +180,18 @@ export default function CreateProduct(props) {
           <div className='text-12 text-up' style={{ marginRight: 4 }}><b>categories list</b></div>
         </Grid>
         <Grid item lg={8} md={10}>
-          <Autocomplete
-            className='bg-white autocomplete-multi-custom border-thin-gray'
-            multiple limitTags={5} filterSelectedOptions
-            options={top100Films.map((option) => option.title)}
-            defaultValue={[top100Films[2].title]}
+          <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple filterSelectedOptions
+            value={input.catelist}
+            onChange={(event, newValue) => { setInput(prevState => ({ ...prevState, catelist: [...newValue] })) }}
+            options={catelistData}
+            getOptionLabel={(option) => option.name}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip style={{ borderRadius: 4 }} label={option} {...getTagProps({ index })} />
+                <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} />
               ))
             }
             renderInput={(params) => (
-              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} />
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
             )}
           />
         </Grid>
@@ -71,18 +201,18 @@ export default function CreateProduct(props) {
           <div className='text-12 text-up' style={{ marginRight: 4 }}><b>categories group</b></div>
         </Grid>
         <Grid item lg={8} md={10}>
-          <Autocomplete
-            className='bg-white autocomplete-multi-custom border-thin-gray'
-            multiple limitTags={5} filterSelectedOptions
-            options={top100Films.map((option) => option.title)}
-            defaultValue={[top100Films[2].title]}
+          <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple limitTags={7} filterSelectedOptions
+            value={input.categroup}
+            onChange={(event, newValue) => { setInput(prevState => ({ ...prevState, categroup: [...newValue] })) }}
+            options={categroupData}
+            getOptionLabel={(option) => option.name}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip style={{ borderRadius: 4 }} label={option} {...getTagProps({ index })} />
+                <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} />
               ))
             }
             renderInput={(params) => (
-              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} />
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
             )}
           />
         </Grid>
@@ -92,18 +222,18 @@ export default function CreateProduct(props) {
           <div className='text-12 text-up' style={{ marginRight: 4 }}><b>categories</b></div>
         </Grid>
         <Grid item lg={8} md={10}>
-          <Autocomplete
-            className='bg-white autocomplete-multi-custom border-thin-gray'
-            multiple limitTags={5} filterSelectedOptions
-            options={top100Films.map((option) => option.title)}
-            defaultValue={[top100Films[2].title]}
+          <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple limitTags={7} filterSelectedOptions
+            value={input.cate}
+            onChange={(event, newValue) => { setInput(prevState => ({ ...prevState, cate: [...newValue] })) }}
+            options={cateData}
+            getOptionLabel={(option) => option.name}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip style={{ borderRadius: 4 }} label={option} {...getTagProps({ index })} />
+                <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} />
               ))
             }
             renderInput={(params) => (
-              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} />
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
             )}
           />
         </Grid>
@@ -113,14 +243,13 @@ export default function CreateProduct(props) {
           <div className='text-12 text-up' style={{ marginRight: 4 }}><b>Brand</b></div>
         </Grid>
         <Grid item lg={8} md={10}>
-          <Autocomplete
-            className='bg-white autocomplete-custom border-thin-gray'
-            filterSelectedOptions
-            options={top100Films}
-            getOptionLabel={(option) => option.title}
-            defaultValue={top100Films[2]}
+          <Autocomplete className='bg-white autocomplete-custom border-thin-gray' filterSelectedOptions
+            value={input.brand}
+            onChange={(event, newValue) => { setInput(prevState => ({ ...prevState, brand: newValue })) }}
+            options={brandData}
+            getOptionLabel={(option) => option.name}
             renderInput={(params) => (
-              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} />
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
             )}
           />
         </Grid>
@@ -144,61 +273,106 @@ export default function CreateProduct(props) {
           <div className='text-12 text-up' style={{ marginRight: 4 }}><b>size - Quantity</b></div>
         </Grid>
         <Grid item container xs={8} spacing={2}>
-          {[0, 1, 2].map((each) =>
-            <React.Fragment key={each}>
+          {input.size.map((each, idx) =>
+            <React.Fragment key={each.name}>
               <Grid item xs={6}>
-                <TextField
-                  className='bg-white textfield-custom border-thin-gray'
-                  variant="standard"
-                  placeholder="Search product"
-                  InputProps={{ disableUnderline: true }}
+                <Autocomplete className='bg-white autocomplete-custom border-thin-gray'
+                  value={each.name}
+                  onChange={(event, newValue) => {
+                    //find the index and replace
+                    let temp = [...sizeData];
+                    let idxSize = sizeData.findIndex(e => e === newValue);
+                    temp.splice(idxSize, 1, input.size[idx].name);
+                    sortSize(temp);
+                    setSizeData(temp)
+                    //update input
+                    temp = [...input.size];
+                    temp[idx] = { ...temp[idx], name: newValue };
+                    setInput(prevState => ({ ...prevState, size: temp }))
+                  }}
+                  options={sizeData}
+                  getOptionLabel={(option) => option}
+                  renderInput={(params) => (
+                    <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
+                  )}
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   className='bg-white textfield-custom border-thin-gray'
+                  value={each.quantity}
+                  onChange={(event) => {
+                    let temp = [...input.size];
+                    temp[idx] = { ...temp[idx], quantity: event.target.value };
+                    setInput(prevState => ({ ...prevState, size: temp }))
+                  }}
                   variant="standard"
                   placeholder="200"
                   InputProps={{ disableUnderline: true }}
+                  type='number' required
                 />
               </Grid>
-
             </React.Fragment>
           )}
         </Grid>
         <Grid item container spacing={2} xs={1}>
-          {[0, 1, 2].map((each) =>
-            <Grid item >
-              <Button style={{ height: 46 }} variant="contained" color="error">delete</Button>
+          {input.size.length > 1 && input.size.map((each, idx) =>
+            <Grid item key={idx}>
+              <Button
+                style={{ height: 46, borderRadius: 0 }} variant="contained" color="error"
+                onClick={() => {
+                  //add this value to sizedata
+                  let temp = [...sizeData];
+                  temp.push(input.size[idx].name);
+                  sortSize(temp);
+                  setSizeData(temp);
+                  //remove this value in input
+                  temp = [...input.size];
+                  temp.splice(idx, 1)
+                  setInput(prevState => ({ ...prevState, size: temp }))
+                }}
+              >delete </Button>
             </Grid>
           )}
         </Grid>
       </Grid >
-      <Grid container>
-        <Grid item xs={2}> </Grid >
-        <Grid item xs={8}>
-          <center>
-            <Button variant="contained" color="primary" style={{ marginTop: 20 }}>add</Button>
-          </center>
-        </Grid >
-      </Grid>
+      {input.size.length < 8 &&
+        <Grid container>
+          <Grid item xs={2}> </Grid >
+          <Grid item xs={8}>
+            <center>
+              <Button variant="contained" color="primary" style={{ marginTop: 16, height: 46, width: 90, borderRadius: 0 }}
+                onClick={() => {
+                  let temp = [...input.size];
+                  temp.push({ name: sizeData[0], quantity: 1 });
+                  setInput(prevState => ({ ...prevState, size: temp }))
+                  temp = [...sizeData];
+                  temp.splice(0, 1);
+                  setSizeData(temp)
+                }}
+              >add</Button>
+            </center>
+          </Grid >
+        </Grid>
+      }
       <Grid container className='align-items-center' spacing={2} style={{ marginTop: 8 }}>
         <Grid item xs={2} style={{ textAlign: 'right' }}>
           <div className='text-12 text-up' style={{ marginRight: 4 }}><b>Colors</b></div>
         </Grid>
         <Grid item lg={8} md={10}>
-          <Autocomplete
-            className='bg-white autocomplete-multi-custom border-thin-gray'
-            multiple limitTags={5} filterSelectedOptions
-            options={top100Films.map((option) => option.title)}
-            defaultValue={[top100Films[2].title]}
+          <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple limitTags={7} filterSelectedOptions
+            value={input.colors}
+            onChange={(event, newValue) => { setInput(prevState => ({ ...prevState, colors: [...newValue] })) }}
+            options={colorData}
+            getOptionLabel={(option) => option.name}
+            renderOption={(props, option) => (<div {...props}><FiberManualRecordIcon style={{ fill: option.code }} />{option.name}</div>)}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
-                <Chip style={{ borderRadius: 4 }} label={option} {...getTagProps({ index })} />
+                <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} avatar={<FiberManualRecordIcon style={{ fill: option.code }} />} />
               ))
             }
             renderInput={(params) => (
-              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} />
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
             )}
           />
         </Grid>
@@ -212,11 +386,12 @@ export default function CreateProduct(props) {
             className='bg-white textfield-area-custom border-thin-gray'
             variant="standard"
             placeholder="Model wearing size S
-            - Chest: 36”
-            - Length: 25.75”"
+      - Chest: 36”
+      - Length: 25.75”"
             multiline
             rows={4}
             InputProps={{ disableUnderline: true }}
+            required
           />
         </Grid>
       </Grid>
