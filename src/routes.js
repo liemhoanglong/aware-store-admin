@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Product from "./pages/Product";
+import CreateProduct from "./pages/CreateProduct";
 import Order from './pages/Order';
 
 const routes = [
@@ -25,12 +26,12 @@ const routes = [
     {
         path: '/app/products/add-product',
         exact: true,
-        component: () => <Product />
+        component: () => <CreateProduct />
     },
     {
         path: '/app/products/edit-product/:id',
         exact: true,
-        component: () => <Product />
+        component: () => <CreateProduct />
     },
     {
         path: '/app/orders',

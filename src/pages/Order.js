@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import QueryString from 'query-string';
 import {
-  Select, MenuItem, Button, IconButton, InputAdornment, TextField, Paper,
+  Button, IconButton, InputAdornment, TextField, Paper,
   Table, TableBody, TableHead, TableRow,
   Alert, Snackbar
 } from '@mui/material';
@@ -15,7 +15,6 @@ import { StyledTableCell, StyledTableRow } from '../components/Table/style';
 import Pagination from '../components/Pagination';
 import Progress from '../components/Progress';
 import PopUpAlert from '../components/PopUpAlert';
-import CallAPI from '../services/CallAPI';
 import CallAuthAPI from '../services/CallAuthAPI';
 import parseDay from '../utils/parseDay';
 
@@ -43,7 +42,7 @@ export default function Order(props) {
   const [orderData, setOrderData] = useState();
 
   useEffect(() => {
-    console.log('order page fetch------------------------')
+    // console.log('order page fetch------------------------')
     setLoad(true);
     const fetchData = async () => {
       let queryObject = QueryString.parse(location.search);
@@ -66,7 +65,7 @@ export default function Order(props) {
       }));
       setSearchInput(queryObject.name);
       try {
-        let res = await CallAPI(`/order/admin-search?name=${queryObject.name}&mindate=${queryObject.mindate}&maxdate=${queryObject.maxdate}&status=${queryObject.status}&page=${queryObject.page}&limit=${queryObject.limit}`, 'get', {})
+        let res = await CallAuthAPI(`/order/admin-search?name=${queryObject.name}&mindate=${queryObject.mindate}&maxdate=${queryObject.maxdate}&status=${queryObject.status}&page=${queryObject.page}&limit=${queryObject.limit}`, 'get', {})
         setOrderData(res.data);
       } catch (err) {
         console.log(err)
@@ -118,8 +117,8 @@ export default function Order(props) {
   };
 
   const handleChangeStatus = async (status, id) => {
-    console.log(id ? id : orderId)
-    console.log(status)
+    // console.log(id ? id : orderId)
+    // console.log(status)
     try {
       let res = await CallAuthAPI(`/order/update-status/${id ? id : orderId}`, 'put', { status })
       if (res.status === 200) {
@@ -249,7 +248,7 @@ export default function Order(props) {
                       )))}
                     </StyledTableCell>
                     <StyledTableCell>
-                      {(order.totalPrice + order.feeShipping).toLocaleString('en-US', {
+                      {(order.totalPrice).toLocaleString('en-US', {
                         style: 'currency',
                         currency: 'USD',
                       }).slice(1)}

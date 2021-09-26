@@ -70,6 +70,10 @@ div, p, span{
   color: #acacac;
 }
 
+.text-up{
+  text-transform: uppercase;
+}
+
 .img-cover{
   object-fit: cover;
 }
@@ -306,7 +310,44 @@ div, p, span{
   border-radius: 2px;
 }
 
-.textfield-search input{
+.textfield-custom{
+  padding: 8px 16px;
+  width: calc(100% - 32px);
+  border-radius: 2px;
+  height: 28px;
+}
+
+.textfield-area-custom{
+  padding: 5px 16px;
+  width: calc(100% - 32px);
+  border-radius: 2px;
+  height: 100px;
+}
+
+.autocomplete-custom{
+  padding: 3px 12px 3px 16px;
+  width: calc(100% - 28px);
+  border-radius: 2px;
+  min-height: 40px;
+}
+
+.autocomplete-custom input{
+  padding: 8px 0 !important;
+}
+
+.autocomplete-multi-custom{
+  padding: 3px 12px 3px 8px;
+  width: calc(100% - 20px);
+  border-radius: 2px;
+  min-height: 40px;
+}
+
+.autocomplete-multi-custom input{
+  padding: 8px 0 !important;
+}
+
+.textfield-search input,
+.textfield-custom input{
   font-size: 14px;
 }
 
