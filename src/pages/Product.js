@@ -17,7 +17,6 @@ import Pagination from '../components/Pagination';
 import CardProduct from '../components/CardProduct';
 import Progress from '../components/Progress';
 import PopUpAlert from '../components/PopUpAlert';
-import CallAPI from '../services/CallAPI';
 import CallAuthAPI from '../services/CallAuthAPI';
 import parseDay from '../utils/parseDay';
 
@@ -60,7 +59,7 @@ export default function Product(props) {
       }));
       setSearchInput(queryObject.name);
       try {
-        let res = await CallAPI(`/product/admin-search?name=${queryObject.name}&sort=${queryObject.sort}&page=${queryObject.page}&limit=${queryObject.limit}`, 'get', {})
+        let res = await CallAuthAPI(`/product/admin-search?name=${queryObject.name}&sort=${queryObject.sort}&page=${queryObject.page}&limit=${queryObject.limit}`, 'get', {})
         setProductData(res.data);
       } catch (err) {
         console.log(err)
@@ -226,13 +225,13 @@ export default function Product(props) {
                       <CardProduct product={product} />
                     </StyledTableCell>
                     <StyledTableCell>
-                      {`${product.sold[0].quantity + product.sold[1].quantity + product.sold[2].quantity}/${product.size[0].quantity + product.size[1].quantity + product.size[2].quantity}`}
+                      {`${product.sold.reduce((sum, x) => sum + x.quantity, 0)}/${product.size.reduce((sum, x) => sum + x.quantity, 0)}`}
                     </StyledTableCell>
                     <StyledTableCell>
                       {parseDay(product.postedDate)}
                     </StyledTableCell>
                     <StyledTableCell>
-                      {(product.price * (product.sold[0].quantity + product.sold[1].quantity + product.sold[2].quantity)).toLocaleString('en-US', { style: 'currency', currency: 'USD' }).slice(1)}
+                      {(product.price * (product.sold.reduce((sum, x) => sum + x.quantity, 0))).toLocaleString('en-US', { style: 'currency', currency: 'USD' }).slice(1)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       <div className="dropdown" style={{ fontSize: 14 }}>
@@ -251,7 +250,8 @@ export default function Product(props) {
             </Table>
           </div>
           <br />
-          {productData &&
+          {
+            productData &&
             <Pagination
               page={page}
               rowsPerPage={rowsPerPage}
@@ -262,8 +262,8 @@ export default function Product(props) {
           }
           <br />
           <br />
-        </div>
-      </Paper>
+        </div >
+      </Paper >
     </>
   )
 }

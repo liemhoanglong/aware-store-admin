@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import QueryString from 'query-string';
 import {
-  Select, MenuItem, Button, IconButton, InputAdornment, TextField, Paper,
+  Button, IconButton, InputAdornment, TextField, Paper,
   Table, TableBody, TableHead, TableRow,
   Alert, Snackbar
 } from '@mui/material';
@@ -15,7 +15,6 @@ import { StyledTableCell, StyledTableRow } from '../components/Table/style';
 import Pagination from '../components/Pagination';
 import Progress from '../components/Progress';
 import PopUpAlert from '../components/PopUpAlert';
-import CallAPI from '../services/CallAPI';
 import CallAuthAPI from '../services/CallAuthAPI';
 import parseDay from '../utils/parseDay';
 
@@ -35,7 +34,7 @@ export default function Order(props) {
     rowsPerPage: 10,
     search: '',
     mindate: '2021-09-01',
-    maxdate: (new Date).toISOString().slice(0, 10),
+    maxdate: (new Date()).toISOString().slice(0, 10),
     status: '',
   });
   const { page, rowsPerPage, search, mindate, maxdate } = filter
@@ -43,7 +42,7 @@ export default function Order(props) {
   const [orderData, setOrderData] = useState();
 
   useEffect(() => {
-    console.log('order page fetch------------------------')
+    // console.log('order page fetch------------------------')
     setLoad(true);
     const fetchData = async () => {
       let queryObject = QueryString.parse(location.search);
@@ -53,7 +52,7 @@ export default function Order(props) {
       queryObject.page = queryObject.page === undefined ? 1 : queryObject.page;
       queryObject.limit = queryObject.limit === undefined ? 10 : queryObject.limit;
       queryObject.mindate = queryObject.mindate === undefined ? '2021-09-01' : queryObject.mindate;
-      queryObject.maxdate = queryObject.maxdate === undefined ? (new Date).toISOString().slice(0, 10) + '' : queryObject.maxdate;
+      queryObject.maxdate = queryObject.maxdate === undefined ? (new Date()).toISOString().slice(0, 10) + '' : queryObject.maxdate;
       queryObject.status = queryObject.status === undefined ? '' : queryObject.status;
       setFilter(prevState => ({
         ...prevState,
@@ -66,7 +65,7 @@ export default function Order(props) {
       }));
       setSearchInput(queryObject.name);
       try {
-        let res = await CallAPI(`/order/admin-search?name=${queryObject.name}&mindate=${queryObject.mindate}&maxdate=${queryObject.maxdate}&status=${queryObject.status}&page=${queryObject.page}&limit=${queryObject.limit}`, 'get', {})
+        let res = await CallAuthAPI(`/order/admin-search?name=${queryObject.name}&mindate=${queryObject.mindate}&maxdate=${queryObject.maxdate}&status=${queryObject.status}&page=${queryObject.page}&limit=${queryObject.limit}`, 'get', {})
         setOrderData(res.data);
       } catch (err) {
         console.log(err)
@@ -118,8 +117,8 @@ export default function Order(props) {
   };
 
   const handleChangeStatus = async (status, id) => {
-    console.log(id ? id : orderId)
-    console.log(status)
+    // console.log(id ? id : orderId)
+    // console.log(status)
     try {
       let res = await CallAuthAPI(`/order/update-status/${id ? id : orderId}`, 'put', { status })
       if (res.status === 200) {
@@ -181,8 +180,8 @@ export default function Order(props) {
           <p className='text-gray' style={{ marginRight: '20px' }}>ORDERED DATE</p>
           <input className='input-date-start' type="date" value={filter.mindate} onChange={e => { handleChangeDate(e.target.value > filter.maxdate ? filter.maxdate : e.target.value, filter.maxdate) }} />
           <input className='input-date-end' type="date" value={filter.maxdate} onChange={e => { handleChangeDate(filter.mindate, e.target.value < filter.mindate ? filter.mindate : e.target.value) }} />
-          <Button onClick={() => { let date = new Date().toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Today</Button>
-          <Button onClick={() => { let date = new Date(); date.setDate(date.getDate() - 1); date = date.toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Yesterday</Button>
+          <Button onClick={() => { let date = new Date()().toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Today</Button>
+          <Button onClick={() => { let date = new Date()(); date.setDate(date.getDate() - 1); date = date.toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Yesterday</Button>
         </div>
         <div className='d-flex flex-wrap'>
           <form onSubmit={handleSearch}>
@@ -249,7 +248,7 @@ export default function Order(props) {
                       )))}
                     </StyledTableCell>
                     <StyledTableCell>
-                      {(order.totalPrice + order.feeShipping).toLocaleString('en-US', {
+                      {(order.totalPrice).toLocaleString('en-US', {
                         style: 'currency',
                         currency: 'USD',
                       }).slice(1)}
