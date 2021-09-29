@@ -32,7 +32,7 @@ export default function Header(props) {
               /><b>Admin</b>
             </div>
             <div className="dropdown-content-right">
-              <Link to="/app/profile" className='link-custom d-block'>Profile</Link>
+              {/* <Link to="/app/profile" className='link-custom d-block'>Profile</Link> */}
               <div className='cursor-hover' onClick={() => logoutUser(userDispatch, history)}>Logout</div>
             </div>
           </div>

@@ -159,7 +159,7 @@ export default function Order(props) {
         handleClose={() => setOpenAlert(false)}
         handleSubmit={() => handleChangeStatus('-1')}
         title={'Confirm'}
-        content={'Are you sure to cancel this order?'}
+        content={'Are you sure you want to cancel this order?'}
       />
       <Snackbar
         open={openMsg.status}
@@ -265,20 +265,20 @@ export default function Order(props) {
                         <div className="dropbtn-right d-flex align-items-center" style={{ padding: '10 0' }}>
                           <b>Actions</b>
                         </div>
-                        {order.status !== 1 &&
-                          <div className="dropdown-content-right" style={{ width: 200 }}>
+                        <div className="dropdown-content-right" style={{ width: 200 }}>
+                          {order.status !== 1 &&
                             <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '1') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#82bf11' }} /><span style={{ marginLeft: 12 }}>Mark as Completed</span></div>
-                            {order.status !== 0 &&
-                              <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '0') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#fbba4e' }} /><span style={{ marginLeft: 12 }}>Mark as Pending</span></div>
-                            }
-                            {order.status !== 2 &&
-                              <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '2') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#419BF9' }} /><span style={{ marginLeft: 12 }}>Mark as Delivering</span></div>
-                            }
-                            {order.status !== -1 &&
-                              <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '-1') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#f05d62' }} /><span style={{ marginLeft: 12 }}>Mark as Canceled</span></div>
-                            }
-                          </div>
-                        }
+                          }
+                          {order.status !== 0 &&
+                            <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '0') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#fbba4e' }} /><span style={{ marginLeft: 12 }}>Mark as Pending</span></div>
+                          }
+                          {order.status !== 2 &&
+                            <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '2') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#419BF9' }} /><span style={{ marginLeft: 12 }}>Mark as Delivering</span></div>
+                          }
+                          {order.status !== -1 &&
+                            <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '-1') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#f05d62' }} /><span style={{ marginLeft: 12 }}>Mark as Canceled</span></div>
+                          }
+                        </div>
                       </div>
                     </StyledTableCell>
                   </StyledTableRow>
