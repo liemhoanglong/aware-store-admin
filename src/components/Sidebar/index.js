@@ -45,8 +45,8 @@ export default function Sidebar(props) {
             <PaymentIcon />Payments
           </div>
         </Link>
-        <Link to='/app/categroup' className='link-custom'>
-          <div className={`sidebar-item${pathname.includes('categroup') ? '-active' : ''}`}>
+        <Link to='/app/cate-group' className='link-custom'>
+          <div className={`sidebar-item${pathname.includes('cate-group') ? '-active' : ''}`}>
             <AccountTreeIcon />Category Group
           </div>
         </Link>

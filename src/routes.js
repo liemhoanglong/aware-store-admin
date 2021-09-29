@@ -43,7 +43,7 @@ const routes = [
         component: () => <Order />
     },
     {
-        path: '/app/categroup',
+        path: '/app/cate-group',
         exact: true,
         component: () => <CRUCategroup />
     },
