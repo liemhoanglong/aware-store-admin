@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import {
   Grid, Button, TextField, Autocomplete, Chip, List, ListItem,
   Snackbar, Alert,
@@ -13,6 +13,7 @@ import CallAuthAPI from '../services/CallAuthAPI';
 import CallAPI from '../services/CallAPI';
 import PopUpAlert from '../components/PopUpAlert';
 import PopupImage from '../components/PopupImage';
+import Progress from '../components/Progress';
 import config from '../constants/config';
 import { sortSize, sortObjectSize } from '../utils/sortSize';
 
@@ -20,17 +21,24 @@ import { sortSize, sortObjectSize } from '../utils/sortSize';
 // 'https://assets.myntassets.com/h_1440,q_100,w_1080/v1/assets/images/1862801/2018/2/9/11518155061506-Roadster-Men-Maroon--Navy-Blue-Regular-Fit-Checked-Casual-Shirt-8861518155061131-1.jpg'
 // 'https://revolutionclothing.cdn.vccloud.vn/wp-content/uploads/2021/06/z2536606508904_dabe1d43c33b3f0cab550eae587f349b-500x498.jpg'
 
-export default function CreateProduct(props) {
+export default function CRUProduct(props) {
+  const history = useHistory();
+  const location = history.location;
+  const isEdit = location.pathname.includes('edit-product');
+  const [load, setLoad] = useState(false);
+
   const [input, setInput] = useState({
     imageList: [],
     name: '',
-    // catelist: [],
-    // categroup: [],
-    // cate: [],
-    // brand: null,
     price: 0.00,
     size: [{ name: config.SIZE[0], quantity: 1 }],
-    // colors: [],
+    info: '',
+  });
+  const [inputEdit, setInputEdit] = useState({
+    imageList: [],
+    name: '',
+    price: 0.00,
+    size: [{ name: config.SIZE[0], quantity: 1 }],
     info: '',
   });
 
@@ -42,6 +50,7 @@ export default function CreateProduct(props) {
   const [sizeData, setSizeData] = useState(config.SIZE.slice(1));
 
   const [catelistValue, setCatelistValue] = useState([]);
+  const [catelistValueEdit, setCatelistValueEdit] = useState([]);
   const [catelistInputValue, setCatelistInputValue] = useState([]);
 
   useEffect(() => {
@@ -52,6 +61,7 @@ export default function CreateProduct(props) {
   }, [catelistValue]);
 
   const [categroupValue, setCategroupValue] = useState([]);
+  const [categroupValueEdit, setCategroupValueEdit] = useState([]);
   const [categroupInputValue, setCategroupInputValue] = useState([]);
 
   useEffect(() => {
@@ -62,6 +72,7 @@ export default function CreateProduct(props) {
   }, [categroupValue]);
 
   const [cateValue, setCateValue] = useState([]);
+  const [cateValueEdit, setCateValueEdit] = useState([]);
   const [cateInputValue, setCateInputValue] = useState([]);
 
   useEffect(() => {
@@ -72,6 +83,7 @@ export default function CreateProduct(props) {
   }, [cateValue]);
 
   const [brandValue, setBrandValue] = useState(null);
+  const [brandValueEdit, setBrandValueEdit] = useState(null);
   const [brandInputValue, setBrandInputValue] = useState(null);
 
   useEffect(() => {
@@ -79,7 +91,7 @@ export default function CreateProduct(props) {
       setBrandInputValue(null);
       return;
     }
-    if (brandValue === brandInputValue.id) {
+    if (brandInputValue && brandValue === brandInputValue.id) {
       return;
     }
     let temp = brandData.find((e) => brandValue === e._id);
@@ -87,6 +99,7 @@ export default function CreateProduct(props) {
   }, [brandValue]);
 
   const [colorValue, setColorValue] = useState([]);
+  const [colorValueEdit, setColorValueEdit] = useState([]);
   const [colorInputValue, setColorInputValue] = useState([]);
 
   useEffect(() => {
@@ -105,20 +118,78 @@ export default function CreateProduct(props) {
 
   useEffect(() => {
     const fetchData = async () => {
-      let callCategroup = CallAPI('/cate-group', 'get', {});
-      let callCate = CallAPI('/cate', 'get', {});
-      let callBrand = CallAPI('/brand', 'get', {});
-      let callColor = CallAPI('/color', 'get', {});
+      try {
+        setLoad(true);
+        let callCategroup = CallAPI('/cate-group', 'get', {});
+        let callCate = CallAPI('/cate', 'get', {});
+        let callBrand = CallAPI('/brand', 'get', {});
+        let callColor = CallAPI('/color', 'get', {});
 
-      let resCategroup = await callCategroup;
-      let resCate = await callCate;
-      let resBrand = await callBrand;
-      let resColor = await callColor;
+        let resCategroup = await callCategroup;
+        let resCate = await callCate;
+        let resBrand = await callBrand;
+        let resColor = await callColor;
 
-      setCategroupData(resCategroup.data.data);
-      setCateData(resCate.data.data);
-      setBrandData(resBrand.data.data);
-      setColorData(resColor.data.data);
+        setCategroupData(resCategroup.data.data);
+        setCateData(resCate.data.data);
+        setBrandData(resBrand.data.data);
+        setColorData(resColor.data.data);
+      } catch (err) {
+        setLoad(false);
+        console.log(err);
+      }
+      setLoad(false);
+    }
+    fetchData();
+  }, [])
+
+  const [soldValue, setSoldValue] = useState([])
+  const [reset, setReset] = useState(false)
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isEdit) {
+        let parsePathname = location.pathname.split('/');
+        let productId = parsePathname[4];
+        try {
+          setLoad(true);
+          let res = await CallAPI(`/product/admin/${productId}`, 'get', {});
+          let product = res.data.data;
+          setInput({
+            imageList: product.imageList,
+            name: product.name,
+            price: product.price,
+            size: product.size,
+            info: product.info.replace(/<br>/g, '\r\n'),
+          })
+          setInputEdit({
+            imageList: product.imageList,
+            name: product.name,
+            price: product.price,
+            size: product.size,
+            info: product.info.replace(/<br>/g, '\r\n'),
+          })
+          setCatelistValue(product.catelist);
+          setCatelistValueEdit(product.catelist);
+          setCategroupValue(product.categroup);
+          setCategroupValueEdit(product.categroup);
+          setCateValue(product.cate);
+          setCateValueEdit(product.cate);
+          setBrandValue(product.brand);
+          setBrandValueEdit(product.brand);
+          setColorValue(product.colors);
+          setColorValueEdit(product.colors);
+          let sizeDataTemp = config.SIZE;
+          for (let i = 0; i < product.size.length; i++) {
+            sizeDataTemp = sizeDataTemp.filter(e => e !== product.size[i].name);
+          }
+          setSizeData(sizeDataTemp)
+          setSoldValue(product.sold)
+        } catch (err) {
+          setLoad(false);
+          console.log(err)
+        }
+        setLoad(false);
+      }
     }
     fetchData();
   }, [])
@@ -171,7 +242,7 @@ export default function CreateProduct(props) {
     }
     //conver input.info breakline /r/n info to <br/> 
     let info = input.info;
-    info = info.replace(/\r?\n/g, '<br />');
+    info = info.replace(/\r?\n/g, '<br>');
     //create data to send to server
     let data = {
       ...input, size, sold, info,
@@ -183,6 +254,7 @@ export default function CreateProduct(props) {
     };
     // console.log(data)
     try {
+      setLoad(true);
       let res = await CallAuthAPI('/product', 'post', data);
       if (res.status === 201) {
         setOpenMsg({ status: true, type: 'success', msg: 'Create product successful' });
@@ -194,9 +266,10 @@ export default function CreateProduct(props) {
       else
         setOpenMsg({ status: true, type: 'error', msg: 'Connection to sever lost!' });
       console.log(err)
+      setLoad(false);
     }
+    setLoad(false);
   }
-  let a = 0;
 
   const handleCancel = () => {
     setInput({
@@ -218,12 +291,69 @@ export default function CreateProduct(props) {
     setColorValue([]);
   }
 
+  const handleEditProduct = async (e) => {
+    e.preventDefault();
+    //cope size to sold and set default quantity = 0
+    let size = [...input.size];
+    size = sortObjectSize(size);
+    let sold = []
+    let soldIndex = -1;
+    for (let i = 0; i < size.length; i++) {
+      soldIndex = soldValue.findIndex(e => e.name === size[i].name);
+      if (soldIndex > -1) {
+        sold = [...sold, soldValue[soldIndex]];
+      } else {
+        sold = [...sold, { name: size[i].name, quantity: 0 }];
+      }
+    }
+    //conver input.info breakline /r/n info to <br/> 
+    let info = input.info;
+    info = info.replace(/\r?\n/g, '<br>');
+    //create data to send to server
+    let data = {
+      ...input, size, sold, info,
+      catelist: catelistValue,
+      categroup: categroupValue,
+      cate: cateValue,
+      brand: brandValue,
+      colors: colorValue,
+    };
+    // console.log(data)
+    try {
+      setLoad(true);
+      let parsePathname = location.pathname.split('/');
+      let productId = parsePathname[4];
+      let res = await CallAuthAPI('/product/' + productId, 'put', data);
+      if (res.status === 200) {
+        setOpenMsg({ status: true, type: 'success', msg: 'Update product successful' });
+        setReset(!reset);
+      }
+    } catch (err) {
+      if (err.response)
+        setOpenMsg({ status: true, type: 'error', msg: err.response.data.err });
+      else
+        setOpenMsg({ status: true, type: 'error', msg: 'Connection to sever lost!' });
+      console.log(err)
+      setLoad(false);
+    }
+    setLoad(false);
+  }
+  const handleCancelEdit = () => {
+    setInput(inputEdit)
+    setCatelistValue(catelistValueEdit);
+    setCategroupValue(categroupValueEdit);
+    setCateValue(cateValueEdit);
+    setBrandValue(brandValueEdit);
+    setColorValue(colorValueEdit);
+  }
+
   const handleCloseAlert = () => {
     setOpenMsg({ status: false, type: 'success', msg: '' })
   }
 
   return (
-    <form onSubmit={(e) => handleAddProduct(e)}>
+    <form >
+      <Progress isLoad={load} />
       <Snackbar
         open={openMsg.status}
         onClose={handleCloseAlert}
@@ -435,28 +565,54 @@ export default function CreateProduct(props) {
           {input.size.map((each, idx) =>
             <React.Fragment key={each.name}>
               <Grid item xs={6}>
-                <Autocomplete className='bg-white autocomplete-custom border-thin-gray'
-                  value={each.name}
-                  onChange={(event, newValue) => {
-                    //find the index and replace
-                    // console.log(newValue)
-                    if (!newValue) return
-                    let temp = [...sizeData];
-                    let idxSize = sizeData.findIndex(e => e === newValue);
-                    temp.splice(idxSize, 1, input.size[idx].name);
-                    sortSize(temp);
-                    setSizeData(temp)
-                    //update input
-                    temp = [...input.size];
-                    temp[idx] = { ...temp[idx], name: newValue };
-                    setInput(prevState => ({ ...prevState, size: temp }))
-                  }}
-                  options={sizeData}
-                  getOptionLabel={(option) => option}
-                  renderInput={(params) => (
-                    <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
-                  )}
-                />
+                {isEdit && idx < soldValue.length ?
+                  <Autocomplete className='bg-white autocomplete-custom border-thin-gray'
+                    value={each.name}
+                    onChange={(event, newValue) => {
+                      //find the index and replace
+                      // console.log(newValue)
+                      if (!newValue) return
+                      let temp = [...sizeData];
+                      let idxSize = sizeData.findIndex(e => e === newValue);
+                      temp.splice(idxSize, 1, input.size[idx].name);
+                      sortSize(temp);
+                      setSizeData(temp)
+                      //update input
+                      temp = [...input.size];
+                      temp[idx] = { ...temp[idx], name: newValue };
+                      setInput(prevState => ({ ...prevState, size: temp }))
+                    }}
+                    options={sizeData}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
+                    )}
+                    disabled
+                  />
+                  :
+                  <Autocomplete className='bg-white autocomplete-custom border-thin-gray'
+                    value={each.name}
+                    onChange={(event, newValue) => {
+                      //find the index and replace
+                      // console.log(newValue)
+                      if (!newValue) return
+                      let temp = [...sizeData];
+                      let idxSize = sizeData.findIndex(e => e === newValue);
+                      temp.splice(idxSize, 1, input.size[idx].name);
+                      sortSize(temp);
+                      setSizeData(temp)
+                      //update input
+                      temp = [...input.size];
+                      temp[idx] = { ...temp[idx], name: newValue };
+                      setInput(prevState => ({ ...prevState, size: temp }))
+                    }}
+                    options={sizeData}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} required />
+                    )}
+                  />
+                }
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -464,7 +620,7 @@ export default function CreateProduct(props) {
                   value={each.quantity}
                   onChange={(event) => {
                     let temp = [...input.size];
-                    temp[idx] = { ...temp[idx], quantity: Number(event.target.value) };
+                    temp[idx] = { ...temp[idx], quantity: Number(event.target.value > -1 ? event.target.value : 0) };
                     setInput(prevState => ({ ...prevState, size: temp }))
                   }}
                   variant="standard"
@@ -479,20 +635,38 @@ export default function CreateProduct(props) {
         <Grid item container spacing={2} xs={1}>
           {input.size.length > 1 && input.size.map((each, idx) =>
             <Grid item key={idx}>
-              <Button
-                style={{ height: 46, borderRadius: 0 }} variant="contained" color="error"
-                onClick={() => {
-                  //add this value to sizedata
-                  let temp = [...sizeData];
-                  temp.push(input.size[idx].name);
-                  sortSize(temp);
-                  setSizeData(temp);
-                  //remove this value in input
-                  temp = [...input.size];
-                  temp.splice(idx, 1)
-                  setInput(prevState => ({ ...prevState, size: temp }))
-                }}
-              >delete </Button>
+              {isEdit && idx < soldValue.length ?
+                <Button
+                  style={{ height: 46, borderRadius: 0, marginBottom: 1 }} variant="contained" color="error"
+                  onClick={() => {
+                    //add this value to sizedata
+                    let temp = [...sizeData];
+                    temp.push(input.size[idx].name);
+                    sortSize(temp);
+                    setSizeData(temp);
+                    //remove this value in input
+                    temp = [...input.size];
+                    temp.splice(idx, 1)
+                    setInput(prevState => ({ ...prevState, size: temp }))
+                  }}
+                  disabled
+                >delete </Button>
+                :
+                <Button
+                  style={{ height: 46, borderRadius: 0, marginBottom: 1 }} variant="contained" color="error"
+                  onClick={() => {
+                    //add this value to sizedata
+                    let temp = [...sizeData];
+                    temp.push(input.size[idx].name);
+                    sortSize(temp);
+                    setSizeData(temp);
+                    //remove this value in input
+                    temp = [...input.size];
+                    temp.splice(idx, 1)
+                    setInput(prevState => ({ ...prevState, size: temp }))
+                  }}
+                >delete </Button>
+              }
             </Grid>
           )}
         </Grid>
@@ -568,12 +742,21 @@ export default function CreateProduct(props) {
       <Grid container className='align-items-center' spacing={2} style={{ marginTop: 8 }}>
         <Grid item xs={2}>
         </Grid>
-        <Grid item lg={8} md={10} style={{ textAlign: 'right', marginBottom: 100 }}>
-          <div style={{ width: '100%' }}>
-            <Button onClick={handleCancel} variant="contained" className='custom-button-outline' style={{ width: 180 }}>Cancel</Button>
-            <Button type='submit' variant="contained" className='custom-button' style={{ marginLeft: 20, width: 180 }}>Complete</Button>
-          </div>
-        </Grid>
+        {isEdit ?
+          <Grid item lg={8} md={10} style={{ textAlign: 'right', marginBottom: 100 }}>
+            <div style={{ width: '100%' }}>
+              <Button onClick={handleCancelEdit} variant="contained" className='custom-button-outline' style={{ width: 180 }}>Cancel</Button>
+              <Button onClick={(e) => handleEditProduct(e)} variant="contained" className='custom-button' style={{ marginLeft: 20, width: 180 }}>Complete</Button>
+            </div>
+          </Grid>
+          :
+          <Grid item lg={8} md={10} style={{ textAlign: 'right', marginBottom: 100 }}>
+            <div style={{ width: '100%' }}>
+              <Button onClick={handleCancel} variant="contained" className='custom-button-outline' style={{ width: 180 }}>Cancel</Button>
+              <Button onClick={(e) => handleAddProduct(e)} variant="contained" className='custom-button' style={{ marginLeft: 20, width: 180 }}>Complete</Button>
+            </div>
+          </Grid>
+        }
       </Grid>
     </form >
   )
