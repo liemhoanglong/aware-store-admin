@@ -34,7 +34,7 @@ export default function Login(props) { //func login will dispatch action
           <p className='text-gray text-12' style={{ marginTop: 20, marginBottom: 8 }}>PASSWORD</p>
           <input className='login-input m-0 border-none' type='password' value={password} onChange={e => setPassword(e.target.value)} placeholder='Enter password' required />
           <button type='submit' variant="contained" className='btn-max-width' style={{ marginTop: 40 }}>Log in</button>
-          <center style={{ marginTop: 32 }} className='text-12 text-white'><Link to='/forgot-password' className='link-custom'>Forgot password</Link></center>
+          {/* <center style={{ marginTop: 32 }} className='text-12 text-white'><Link to='/forgot-password' className='link-custom'>Forgot password</Link></center> */}
         </form>
       </div >
     </div>

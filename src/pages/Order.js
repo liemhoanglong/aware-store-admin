@@ -10,11 +10,13 @@ import {
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { StyledTableCell, StyledTableRow } from '../components/Table/style';
 import Pagination from '../components/Pagination';
 import Progress from '../components/Progress';
 import PopUpAlert from '../components/PopUpAlert';
+import PopUpOrderDetail from '../components/PopUpOrderDetail';
 import CallAuthAPI from '../services/CallAuthAPI';
 import parseDay from '../utils/parseDay';
 
@@ -116,6 +118,10 @@ export default function Order(props) {
     handleChangeFilter({ name: searchInput, page: 1 });
   };
 
+  const handleChangeSortStatus = (e) => {
+    handleChangeFilter({ status: e });
+  }
+
   const handleChangeStatus = async (status, id) => {
     // console.log(id ? id : orderId)
     // console.log(status)
@@ -147,6 +153,13 @@ export default function Order(props) {
     handleChangeStatus(status, id);
   }
 
+  const [showPopupOrderDetail, setShowPopupOrderDetail] = useState(false);
+  const [orderDetail, setOrderDetail] = useState();
+  const handleCheckShowPopupOrderDetail = (order) => {
+    setOrderDetail(order);
+    setShowPopupOrderDetail(true);
+  }
+
   const handleCloseAlert = () => {
     setOpenMsg({ status: false, type: 'success', msg: '' })
   }
@@ -160,6 +173,11 @@ export default function Order(props) {
         handleSubmit={() => handleChangeStatus('-1')}
         title={'Confirm'}
         content={'Are you sure you want to cancel this order?'}
+      />
+      <PopUpOrderDetail
+        open={showPopupOrderDetail}
+        handleClose={() => setShowPopupOrderDetail(false)}
+        orderDetail={orderDetail}
       />
       <Snackbar
         open={openMsg.status}
@@ -180,8 +198,8 @@ export default function Order(props) {
           <p className='text-gray' style={{ marginRight: '20px' }}>ORDERED DATE</p>
           <input className='input-date-start' type="date" value={filter.mindate} onChange={e => { handleChangeDate(e.target.value > filter.maxdate ? filter.maxdate : e.target.value, filter.maxdate) }} />
           <input className='input-date-end' type="date" value={filter.maxdate} onChange={e => { handleChangeDate(filter.mindate, e.target.value < filter.mindate ? filter.mindate : e.target.value) }} />
-          <Button onClick={() => { let date = new Date()().toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Today</Button>
-          <Button onClick={() => { let date = new Date()(); date.setDate(date.getDate() - 1); date = date.toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Yesterday</Button>
+          <Button onClick={() => { let date = new Date().toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Today</Button>
+          <Button onClick={() => { let date = new Date(); date.setDate(date.getDate() - 1); date = date.toISOString().slice(0, 10); handleChangeDate(date, date); }} className='custom-button-outline-2' variant="contained" style={{ marginLeft: 20 }}>Yesterday</Button>
         </div>
         <div className='d-flex flex-wrap'>
           <form onSubmit={handleSearch}>
@@ -222,11 +240,11 @@ export default function Order(props) {
                     <div className="dropdown" >
                       <div className="dropbtn-right d-flex align-items-center" style={{ padding: '10 0', fontSize: 12 }}> Status </div>
                       <div className="dropdown-content-right">
-                        <div onClick={() => handleChangeStatus('0')} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#fbba4e' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Pending</span></div>
-                        <div onClick={() => handleChangeStatus(1)} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#82bf11' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Completed</span></div>
-                        <div onClick={() => handleChangeStatus(2)} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#419BF9' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Delivering</span></div>
-                        <div onClick={() => handleChangeStatus(-1)} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#f05d62' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Canceled</span></div>
-                        <div onClick={() => handleChangeStatus('')} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: 'gray' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>All</span></div>
+                        <div onClick={() => handleChangeSortStatus('0')} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#fbba4e' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Pending</span></div>
+                        <div onClick={() => handleChangeSortStatus(1)} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#82bf11' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Completed</span></div>
+                        <div onClick={() => handleChangeSortStatus(2)} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#419BF9' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Delivering</span></div>
+                        <div onClick={() => handleChangeSortStatus(-1)} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#f05d62' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>Canceled</span></div>
+                        <div onClick={() => handleChangeSortStatus('')} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: 'gray' }} /><span style={{ marginLeft: 12, fontSize: 12, textTransform: 'none' }}>All</span></div>
                       </div>
                     </div>
                   </StyledTableCell>
@@ -278,6 +296,7 @@ export default function Order(props) {
                           {order.status !== -1 &&
                             <div onClick={() => { handleCheckShowPopupWhenChangeStatus(order._id, '-1') }} className='cursor-hover d-flex align-items-center'><FiberManualRecordIcon style={{ width: 15, height: 15, fill: '#f05d62' }} /><span style={{ marginLeft: 12 }}>Mark as Canceled</span></div>
                           }
+                          <div onClick={() => { handleCheckShowPopupOrderDetail(order) }} className='cursor-hover d-flex align-items-center'><VisibilityIcon style={{ width: 15, height: 15, fill: '#B1907F' }} /><span style={{ marginLeft: 12 }}>View order</span></div>
                         </div>
                       </div>
                     </StyledTableCell>
