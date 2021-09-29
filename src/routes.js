@@ -4,8 +4,12 @@ import { Redirect } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Product from "./pages/Product";
-import CreateProduct from "./pages/CreateProduct";
+import CRUProduct from "./pages/CRUProduct";
 import Order from './pages/Order';
+import CRUCategroup from './pages/CRUCategroup';
+import CRUCate from './pages/CRUCate';
+import CRUBrand from './pages/CRUBrand';
+import CRUColor from './pages/CRUColor';
 
 const routes = [
     {
@@ -26,17 +30,37 @@ const routes = [
     {
         path: '/app/products/add-product',
         exact: true,
-        component: () => <CreateProduct />
+        component: () => <CRUProduct />
     },
     {
         path: '/app/products/edit-product/:id',
         exact: true,
-        component: () => <CreateProduct />
+        component: () => <CRUProduct />
     },
     {
         path: '/app/orders',
         exact: true,
         component: () => <Order />
+    },
+    {
+        path: '/app/cate-group',
+        exact: true,
+        component: () => <CRUCategroup />
+    },
+    {
+        path: '/app/category',
+        exact: true,
+        component: () => <CRUCate />
+    },
+    {
+        path: '/app/brand',
+        exact: true,
+        component: () => <CRUBrand />
+    },
+    {
+        path: '/app/color',
+        exact: true,
+        component: () => <CRUColor />
     },
     {
         path: '',

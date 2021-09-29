@@ -8,6 +8,9 @@ import OrderIcon from '../Icon/OrderIcon';
 import ProductIcon from '../Icon/ProductIcon';
 import PaymentIcon from '../Icon/PaymentIcon';
 import PromoIcon from '../Icon/PromoIcon';
+import PaletteIcon from '@mui/icons-material/Palette';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import CategoryIcon from '@mui/icons-material/Category';
 import SettingIcon from '../Icon/SettingIcon';
 import './sidebar.css'
 
@@ -42,9 +45,24 @@ export default function Sidebar(props) {
             <PaymentIcon />Payments
           </div>
         </Link>
-        <Link to='/app/promotions' className='link-custom'>
-          <div className={`sidebar-item${pathname.includes('promo') ? '-active' : ''}`}>
-            <PromoIcon />Promotions
+        <Link to='/app/cate-group' className='link-custom'>
+          <div className={`sidebar-item${pathname.includes('cate-group') ? '-active' : ''}`}>
+            <AccountTreeIcon />Category Group
+          </div>
+        </Link>
+        <Link to='/app/category' className='link-custom'>
+          <div className={`sidebar-item${pathname.includes('category') ? '-active' : ''}`}>
+            <CategoryIcon />Category
+          </div>
+        </Link>
+        <Link to='/app/color' className='link-custom'>
+          <div className={`sidebar-item${pathname.includes('color') ? '-active' : ''}`}>
+            <PaletteIcon />Color
+          </div>
+        </Link>
+        <Link to='/app/brand' className='link-custom'>
+          <div className={`sidebar-item${pathname.includes('brand') ? '-active' : ''}`}>
+            <PromoIcon />Brand
           </div>
         </Link>
         <Link to='/app/setting' className='link-custom'>
