@@ -11,26 +11,32 @@ let UserDispatchContext = React.createContext();
 
 function UserProvider({ children }) {
   const [loginState, setLoginState] = React.useState({ isAuthenticated: null, profile: null });
+  // console.log(loginState)
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         // console.log('fetch user profile')
         const res = await CallAuthAPI('/user/profile', 'GET', null);
+        // console.log('check ---------------------------- loginState.isAuthenticated')
         if (res.status === 200) {
+          // console.log(loginState.isAuthenticated)
+          if (loginState.isAuthenticated === true) return;
           setLoginState({ isAuthenticated: true, profile: res.data })
         } else {
+          // console.log(loginState.isAuthenticated)
+          if (loginState.isAuthenticated === false) return;
           setLoginState({ isAuthenticated: false, profile: null })
         }
       } catch (err) {
         console.log(err)
+        if (loginState.isAuthenticated === false) return;
         setLoginState({ isAuthenticated: false, profile: null })
       }
     }
     fetchData();
   }, [loginState.isAuthenticated])
 
-  // console.log(loginState)
   return (
     <UserStateContext.Provider value={loginState}>
       <UserDispatchContext.Provider value={setLoginState}>

@@ -19,11 +19,11 @@ export default function Sidebar(props) {
   return (
     <div style={{ width: 220, height: '100vh', borderRight: '1px solid #EDEDED' }}>
       <center style={{ height: '104px' }}>
-        <Link to='/'><img src={logo} alt='logo' width='132px' style={{ padding: '36px' }} /></Link>
+        <Link to='/'><img src={logo} alt='logo' width='132px' style={{ padding: '32px' }} /></Link>
       </center>
       <Stack spacing={1}>
         <Link to='/' className='link-custom'>
-          <div className={`sidebar-item${pathname.includes('home') ? '-active' : ''}`}>
+          <div className={`sidebar-item${pathname.includes('overview') ? '-active' : ''}`}>
             <OverviewIcon />Overview
           </div>
         </Link>
