@@ -17,15 +17,13 @@ import Progress from '../components/Progress';
 import config from '../constants/config';
 import { sortSize, sortObjectSize } from '../utils/sortSize';
 
-// 'https://cdn.shopify.com/s/files/1/1414/2498/products/CS_ClassicWhite_06_800x.jpg?v=1614938767'
-// 'https://assets.myntassets.com/h_1440,q_100,w_1080/v1/assets/images/1862801/2018/2/9/11518155061506-Roadster-Men-Maroon--Navy-Blue-Regular-Fit-Checked-Casual-Shirt-8861518155061131-1.jpg'
-// 'https://revolutionclothing.cdn.vccloud.vn/wp-content/uploads/2021/06/z2536606508904_dabe1d43c33b3f0cab550eae587f349b-500x498.jpg'
-
 export default function CRUProduct(props) {
   const history = useHistory();
   const location = history.location;
   const isEdit = location.pathname.includes('edit-product');
   const [load, setLoad] = useState(false);
+
+  const [progress, setProgress] = useState(-1);
 
   const [input, setInput] = useState({
     imageList: [],
@@ -208,6 +206,7 @@ export default function CRUProduct(props) {
   };
 
   const handleOpenAddImage = () => {
+    setProgress(-1);
     setOpenUploadImg(true);
     setTextFieldImage('');
   };
@@ -252,7 +251,7 @@ export default function CRUProduct(props) {
       brand: brandValue,
       colors: colorValue,
     };
-    // console.log(data)
+    console.log(data)
     try {
       setLoad(true);
       let res = await CallAuthAPI('/product', 'post', data);
@@ -381,6 +380,8 @@ export default function CRUProduct(props) {
         handleClose={() => setOpenEditImg(false)}
         handleSubmit={() => handleEditImage()}
         title={'Edit image'}
+        progress={progress}
+        setProgress={setProgress}
       />
       <PopupImage
         open={openUploadImg}
@@ -389,6 +390,8 @@ export default function CRUProduct(props) {
         handleClose={() => setOpenUploadImg(false)}
         handleSubmit={() => handleAddImage()}
         title={'Upload image'}
+        progress={progress}
+        setProgress={setProgress}
       />
       <Grid container className='align-items-center' spacing={2} style={{ marginTop: 50 }}>
         <Grid item xs={2} style={{ textAlign: 'right' }}>
@@ -480,7 +483,7 @@ export default function CRUProduct(props) {
               ))
             }
             renderInput={(params) => (
-              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} placeholder='T-shirt' />
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} placeholder='Tops' />
             )}
           />
         </Grid>
@@ -746,7 +749,7 @@ export default function CRUProduct(props) {
           <Grid item lg={8} md={10} style={{ textAlign: 'right', marginBottom: 100 }}>
             <div style={{ width: '100%' }}>
               <Button onClick={handleCancelEdit} variant="contained" className='custom-button-outline' style={{ width: 180 }}>Cancel</Button>
-              <Button onClick={(e) => handleEditProduct(e)} variant="contained" className='custom-button' style={{ marginLeft: 20, width: 180 }}>Complete</Button>
+              <Button onClick={(e) => handleEditProduct(e)} variant="contained" className='custom-button' style={{ marginLeft: 20, width: 180 }}>Save</Button>
             </div>
           </Grid>
           :

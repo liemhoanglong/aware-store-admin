@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
+import productImage from '../../assets/no-img.png';
+
 const CardProduct = (props) => {
   let { product } = props;
 
   return (
     <div className='d-flex' title={product.name}>
       <Link to={`/app/products/edit-product/${product._id}`} className='link-custom'>
-        <img className='img-cover' width={30} height={40} src={product.imageList[0]} style={{ marginRight: 16 }} />
+        <img className='img-cover' width={30} height={40} src={product.imageList[0] ? product.imageList[0] : productImage} style={{ marginRight: 16 }} />
       </Link>
       <div>
         <Link to={`/app/products/edit-product/${product._id}`} className='link-custom'>

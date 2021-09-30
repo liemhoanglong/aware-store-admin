@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 
 import parseDay from '../../utils/parseDay';
+import productImage from '../../assets/no-img.png';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,7 +40,7 @@ export default function PopUpOrderDetail(props) {
             {props.orderDetail.items.map((item) => (
               <div key={item._id} >
                 <div className='d-flex align-items-center' style={{ marginTop: 10 }}>
-                  <img src={item.productId.imageList[0]} width="100px" height="100px" style={{ objectFit: 'cover' }} />
+                  <img src={item.productId.imageList[0] ? item.productId.imageList[0] : productImage} width="100px" height="100px" style={{ objectFit: 'cover' }} />
                   <div style={{ marginLeft: 20 }}>
                     <DialogContentText style={{ color: 'black' }}>{item.productId.name + ' - ' + item.size + ' - ' + item.color.name}</DialogContentText>
                     <DialogContentText >{item.productId.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</DialogContentText>
