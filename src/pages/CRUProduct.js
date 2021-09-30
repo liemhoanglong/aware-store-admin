@@ -49,36 +49,12 @@ export default function CRUProduct(props) {
 
   const [catelistValue, setCatelistValue] = useState([]);
   const [catelistValueEdit, setCatelistValueEdit] = useState([]);
-  const [catelistInputValue, setCatelistInputValue] = useState([]);
-
-  useEffect(() => {
-    if (catelistValue.length === catelistInputValue.length) return;
-    let temp = [...catelistData];
-    temp = temp.filter((e) => catelistValue.includes(e._id));
-    setCatelistInputValue(temp);
-  }, [catelistValue]);
 
   const [categroupValue, setCategroupValue] = useState([]);
   const [categroupValueEdit, setCategroupValueEdit] = useState([]);
-  const [categroupInputValue, setCategroupInputValue] = useState([]);
-
-  useEffect(() => {
-    if (categroupValue.length === categroupInputValue.length) return;
-    let temp = [...categroupData];
-    temp = temp.filter((e) => categroupValue.includes(e._id));
-    setCategroupInputValue(temp);
-  }, [categroupValue]);
 
   const [cateValue, setCateValue] = useState([]);
   const [cateValueEdit, setCateValueEdit] = useState([]);
-  const [cateInputValue, setCateInputValue] = useState([]);
-
-  useEffect(() => {
-    if (cateValue.length === cateInputValue.length) return;
-    let temp = [...cateData];
-    temp = temp.filter((e) => cateValue.includes(e._id));
-    setCateInputValue(temp);
-  }, [cateValue]);
 
   const [brandValue, setBrandValue] = useState(null);
   const [brandValueEdit, setBrandValueEdit] = useState(null);
@@ -98,14 +74,6 @@ export default function CRUProduct(props) {
 
   const [colorValue, setColorValue] = useState([]);
   const [colorValueEdit, setColorValueEdit] = useState([]);
-  const [colorInputValue, setColorInputValue] = useState([]);
-
-  useEffect(() => {
-    if (colorValue.length === colorInputValue.length) return;
-    let temp = [...colorData];
-    temp = temp.filter((e) => colorValue.includes(e._id));
-    setColorInputValue(temp);
-  }, [colorValue]);
 
   const [imgIndex, setImgIndex] = useState(0);
   const [textFieldIamge, setTextFieldImage] = useState('');
@@ -152,6 +120,7 @@ export default function CRUProduct(props) {
           setLoad(true);
           let res = await CallAPI(`/product/admin/${productId}`, 'get', {});
           let product = res.data.data;
+          setBrandValue(product.brand);
           setInput({
             imageList: product.imageList,
             name: product.name,
@@ -172,7 +141,6 @@ export default function CRUProduct(props) {
           setCategroupValueEdit(product.categroup);
           setCateValue(product.cate);
           setCateValueEdit(product.cate);
-          setBrandValue(product.brand);
           setBrandValueEdit(product.brand);
           setColorValue(product.colors);
           setColorValueEdit(product.colors);
@@ -337,6 +305,7 @@ export default function CRUProduct(props) {
     }
     setLoad(false);
   }
+
   const handleCancelEdit = () => {
     setInput(inputEdit)
     setCatelistValue(catelistValueEdit);
@@ -438,12 +407,14 @@ export default function CRUProduct(props) {
         </Grid>
         <Grid item lg={8} md={10}>
           <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple filterSelectedOptions
-            value={catelistInputValue}
+            value={catelistData.filter((e) => catelistValue.includes(e._id))}
             onChange={(event, newValue) => {
-              setCatelistInputValue(newValue);
               if (newValue) {
                 let temp = [];
-                newValue.forEach((e) => temp.push(e._id));
+                newValue.forEach((e) => {
+                  if (typeof e === "string") temp.push(e);
+                  else temp.push(e._id)
+                });
                 setCatelistValue(temp);
               }
             }}
@@ -454,6 +425,9 @@ export default function CRUProduct(props) {
                 <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} />
               ))
             }
+            isOptionEqualToValue={(option, value) => {
+              return option._id === value._id;
+            }}
             renderInput={(params) => (
               <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} placeholder='Men' />
             )}
@@ -466,17 +440,22 @@ export default function CRUProduct(props) {
         </Grid>
         <Grid item lg={8} md={10}>
           <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple limitTags={7} filterSelectedOptions
-            value={categroupInputValue}
+            value={categroupData.filter((e) => categroupValue.includes(e._id))}
             onChange={(event, newValue) => {
-              setCategroupInputValue(newValue);
               if (newValue) {
                 let temp = [];
-                newValue.forEach((e) => temp.push(e._id));
+                newValue.forEach((e) => {
+                  if (typeof e === "string") temp.push(e);
+                  else temp.push(e._id)
+                });
                 setCategroupValue(temp);
               }
             }}
             options={categroupData}
             getOptionLabel={(option) => option.name}
+            isOptionEqualToValue={(option, value) => {
+              return option._id === value._id;
+            }}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
                 <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} />
@@ -494,17 +473,22 @@ export default function CRUProduct(props) {
         </Grid>
         <Grid item lg={8} md={10}>
           <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple limitTags={7} filterSelectedOptions
-            value={cateInputValue}
+            value={cateData.filter((e) => cateValue.includes(e._id))}
             onChange={(event, newValue) => {
-              setCateInputValue(newValue);
               if (newValue) {
                 let temp = [];
-                newValue.forEach((e) => temp.push(e._id));
+                newValue.forEach((e) => {
+                  if (typeof e === "string") temp.push(e);
+                  else temp.push(e._id)
+                });
                 setCateValue(temp);
               }
             }}
             options={cateData}
             getOptionLabel={(option) => option.name}
+            isOptionEqualToValue={(option, value) => {
+              return option._id === value._id;
+            }}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
                 <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} />
@@ -537,6 +521,26 @@ export default function CRUProduct(props) {
               <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} placeholder='H&M' required />
             )}
           />
+          {/* {JSON.stringify(brandData.filter((e) => e._id === brandValue)[0])}
+          <Autocomplete className='bg-white autocomplete-custom border-thin-gray' filterSelectedOptions
+            value={brandData.filter((e) => e._id === brandValue)[0]}
+            // value={{ _id: "6136e0acbaab7e1fccb62858", name: "H&M", __v: 0 }}
+            onChange={(event, newValue) => {
+              if (newValue) {
+                setBrandValue(newValue._id);
+              } else {
+                setBrandValue("");
+              }
+            }}
+            options={brandData}
+            getOptionLabel={(option) => option.name}
+            isOptionEqualToValue={(option, value) => {
+              return option.name === value.name;
+            }}
+            renderInput={(params) => (
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} placeholder='H&M' required />
+            )}
+          /> */}
         </Grid>
       </Grid>
       <Grid container className='align-items-center' spacing={2} style={{ marginTop: 8 }}>
@@ -699,25 +703,30 @@ export default function CRUProduct(props) {
         </Grid>
         <Grid item lg={8} md={10}>
           <Autocomplete className='bg-white autocomplete-multi-custom border-thin-gray' multiple limitTags={7} filterSelectedOptions
-            value={colorInputValue}
+            value={colorData.filter((e) => colorValue.includes(e._id))}
             onChange={(event, newValue) => {
-              setColorInputValue(newValue);
               if (newValue) {
                 let temp = [];
-                newValue.forEach((e) => temp.push(e._id));
+                newValue.forEach((e) => {
+                  if (typeof e === "string") temp.push(e);
+                  else temp.push(e._id)
+                });
                 setColorValue(temp);
               }
             }}
             options={colorData}
             getOptionLabel={(option) => option.name}
             renderOption={(props, option) => (<div {...props}><FiberManualRecordIcon style={{ fill: option.code }} />{option.name}</div>)}
+            isOptionEqualToValue={(option, value) => {
+              return option._id === value._id;
+            }}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
                 <Chip style={{ borderRadius: 4 }} label={option.name} {...getTagProps({ index })} avatar={<FiberManualRecordIcon style={{ fill: option.code }} />} />
               ))
             }
             renderInput={(params) => (
-              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} placeholder='brown' />
+              <TextField {...params} variant="standard" InputProps={{ ...params.InputProps, disableUnderline: true }} placeholder='Brown' />
             )}
           />
         </Grid>
