@@ -256,6 +256,7 @@ export default function CRUProduct(props) {
     setCateValue([]);
     setBrandValue('');
     setColorValue([]);
+    setSizeData(config.SIZE.slice(1));
   }
 
   const handleEditProduct = async (e) => {
@@ -313,6 +314,11 @@ export default function CRUProduct(props) {
     setCateValue(cateValueEdit);
     setBrandValue(brandValueEdit);
     setColorValue(colorValueEdit);
+    let sizeDataTemp = config.SIZE;
+    for (let i = 0; i < inputEdit.size.length; i++) {
+      sizeDataTemp = sizeDataTemp.filter(e => e !== inputEdit.size[i].name);
+    }
+    setSizeData(sizeDataTemp)
   }
 
   const handleCloseAlert = () => {

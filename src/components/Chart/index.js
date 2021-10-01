@@ -86,7 +86,7 @@ export function Chart(props) {
                     </YAxis>
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="amount" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="amount" stroke="#8884d8" dot={true} activeDot={{ r: 8 }} />
                 </LineChart>
             </ResponsiveContainer>
         </React.Fragment>
@@ -107,10 +107,8 @@ export function ChartProfit(props) {
                 else
                     b.push(0);
             } else {
-                console.log(arr[i].status)
                 if (arr[i].status === 1) {
                     b[b.length - 1] = Math.round((b[b.length - 1] + arr[i].totalPrice) * 100) / 100;
-                    console.log('hello')
                 }
             }
             prev = arr[i].orderedDate.slice(0, 10);
@@ -149,7 +147,6 @@ export function ChartProfit(props) {
                         </Label>
                     </YAxis>
                     <Tooltip />
-                    <Legend />
                     <Bar dataKey="profit" fill="#FEAC72" />
                 </BarChart>
             </ResponsiveContainer>
